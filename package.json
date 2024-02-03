@@ -5,13 +5,16 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bot": "node data.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@resvg/resvg-js": "^2.6.0",
     "dotenv": "^16.4.1",
-    "satori": "^0.10.13"
+    "satori": "^0.10.13",
+    "sharp": "^0.33.2"
   }
 }
