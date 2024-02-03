@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bot": "node hello.js"
+    "sync": "node sync.js",
+    "message": "node message.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "dotenv": "^16.4.1",
     "js-yaml": "^4.1.0",
     "satori": "^0.10.13",
-    "sharp": "^0.33.2"
+    "sharp": "^0.33.2",
+    "sqlite3": "^5.1.7"
   }
 }

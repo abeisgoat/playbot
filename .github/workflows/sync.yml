@@ -1,8 +1,10 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Daily Stats Sync
+run-name: Syncing daily Youtube stats...
 on:
   schedule:
     - cron:  '0 * * * *'
+permissions:
+  contents: write
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
@@ -13,8 +15,13 @@ jobs:
           node-version: '20.x'
       - run: npm ci
       - run: npm run build --if-present
-      - run: npm run bot
+      - run: npm run sync
         env:
           DISCORD_WEBHOOK_URL: ${{secrets.DISCORD_WEBHOOK_URL}}
-          FIREBASE_DATABASE_URL: ${{secrets.FIREBASE_DATABASE_URL}}
           GOOGLE_API_KEY: ${{secrets.GOOGLE_API_KEY}}
+      - name: Sync new data
+        run: |
+            git config --global user.name 'Sync Bot (abeisgoat)'
+            git config --global user.email 'abeisgoat@users.noreply.github.com'
+            git commit -am "Daily sync."
+            git push
