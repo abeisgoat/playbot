@@ -1,17 +1,16 @@
 #!/usr/bin/env node
 import "dotenv/config";
+import yaml from "js-yaml";
+import {readFileSync} from "fs";
 
 const key = process.env.GOOGLE_API_KEY;
 const webhook = process.env.DISCORD_WEBHOOK_URL;
 const rtdb = process.env.FIREBASE_DATABASE_URL;
 
-const playlists = {
-  all: "PLa4xcZh0RlQdsv5UICeWLHvmVYDvrqwhZ",
-  newest: "PLa4xcZh0RlQc7XhhoCrgZyaXTScK1XvJO",
-};
+const config = yaml.load(readFileSync("./bot.yml"));
 
 const playlistUrl = (playlistId) =>
-  `https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=${playlistId}&key=${key}`;
+  `https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=${playlistId}&key=${key}&maxResults=100`;
 const videoUrl = (videoId) =>
   `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${key}`;
 const databaseUrl = (date) =>
@@ -34,10 +33,15 @@ const date = (minus) => {
 };
 
 (async () => {
-  const playlistAll = await get(playlistUrl(playlists.all));
-  const playlistNewest = await get(playlistUrl(playlists.newest));
+  let items = [];
+  for (const playlistId in config.playlists) {
+    const playlist = await get(playlistUrl(config.playlists[playlistId]));
 
-  const items = [...playlistAll.items, ...playlistNewest.items];
+    items = [
+      ...items, 
+      ...playlist.items
+    ]
+  }
 
   const ids = items.map((item) => item.contentDetails.videoId);
 
