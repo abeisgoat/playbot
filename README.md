@@ -9,4 +9,4 @@ GOOGLE_API_KEY
 
 ## Demo
 
-![Demo image](blob/main/image.jpg?raw=true)
+![Demo image](image.png?raw=true)
