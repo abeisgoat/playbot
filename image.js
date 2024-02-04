@@ -11,7 +11,7 @@ const svg = await satori(
   {
     type: 'div',
     props: {
-      children: 'hello, world',
+      children: 'This is a test image with the Roboto font.',
       style: { color: 'black', padding: "10px" },
     },
   },
