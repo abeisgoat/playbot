@@ -6,3 +6,7 @@ To set up your own Playbot, fork this repo then inside your fork's `Settings -> 
 DISCORD_WEBHOOK_URL
 GOOGLE_API_KEY
 ```
+
+## Demo
+
+![Demo image](blob/main/image.jpg?raw=true)
