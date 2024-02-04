@@ -2,7 +2,7 @@ name: Message Daily Stats
 run-name: Sending daily stats message...
 on:
   schedule:
-    - cron:  '30 7 * * *'
+    - cron:  '45 13 * * *'
 jobs:
   message-daily-stats:
     runs-on: ubuntu-latest

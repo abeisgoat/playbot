@@ -2,7 +2,7 @@ name: Sync Daily Stats
 run-name: Syncing daily Youtube stats...
 on:
   schedule:
-    - cron:  '0 * * * *'
+    - cron:  '30 13 * * *'
 permissions:
   contents: write
 jobs:
