@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "sync": "node sync.js",
-    "message": "node image.js && node message.js"
+    "sync": "node sync.js && node image.js",
+    "message": "node message.js"
   },
   "keywords": [],
   "author": "",
