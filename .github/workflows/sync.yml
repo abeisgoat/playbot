@@ -21,7 +21,8 @@ jobs:
           GOOGLE_API_KEY: ${{secrets.GOOGLE_API_KEY}}
       - name: Sync new data
         run: |
-            git config --global user.name 'Sync Bot (abeisgoat)'
-            git config --global user.email 'abeisgoat@users.noreply.github.com'
-            git commit data.db -m "Daily sync."
+            timestamp=$(date -u)
+            git config user.name "Automated"
+            git config user.email "actions@users.noreply.github.com"
+            git commit data.db -m "${timestamp} - Daily sync."
             git push
