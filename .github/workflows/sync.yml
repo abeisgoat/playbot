@@ -1,4 +1,4 @@
-name: Daily Stats Sync
+name: Sync Daily Stats
 run-name: Syncing daily Youtube stats...
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
 permissions:
   contents: write
 jobs:
-  Explore-GitHub-Actions:
+  sync-daily-stats:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,5 +23,5 @@ jobs:
         run: |
             git config --global user.name 'Sync Bot (abeisgoat)'
             git config --global user.email 'abeisgoat@users.noreply.github.com'
-            git commit -am "Daily sync."
+            git commit data.db -m "Daily sync."
             git push
