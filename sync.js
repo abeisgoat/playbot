@@ -11,7 +11,7 @@ const key = process.env.GOOGLE_API_KEY;
 const config = yaml.load(readFileSync("./bot.yml"));
 
 const playlistUrl = (playlistId) =>
-  `https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=${playlistId}&key=${key}`;
+  `https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=${playlistId}&key=${key}&maxResults=100`;
 const videoUrl = (videoId) =>
   `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${key}`;
 const channelUrl = (channelId) =>
@@ -33,16 +33,7 @@ for (const playlistId in config.playlists) {
 
 const videoIds = playlistItems.map((item) => item.contentDetails.videoId);
 
-const videoItems = (await get(videoUrl(videoIds))).items;
-
-const videos = videoItems.reduce((obj, v) => {
-  obj[v.id] = {
-    id: v.id,
-    ...v.statistics,
-  };
-
-  return obj;
-}, {});
+const videos = (await get(videoUrl(videoIds))).items;
 
 const channels = {};
 for (const channelName in config.channels) {
@@ -58,6 +49,13 @@ db.serialize(() => {
     "CREATE TABLE IF NOT EXISTS channel_snapshots (id TEXT PRIMARY KEY, date DATE, snapshot TEXT)",
   );
 
+  db.run(
+      "CREATE TABLE IF NOT EXISTS channel_metadata (id TEXT PRIMARY KEY, snapshot TEXT)",
+  );
+  db.run(
+      "CREATE TABLE IF NOT EXISTS video_metadata (id TEXT PRIMARY KEY, snapshot TEXT)",
+  );
+
   for (const channelName in config.channels) {
     const channelRaw = channels[channelName];
     const channel = {
@@ -69,13 +67,27 @@ db.serialize(() => {
       "INSERT INTO channel_snapshots(id, date, snapshot) VALUES(?, ?, ?) ON CONFLICT(ID) DO UPDATE SET snapshot = excluded.snapshot",
       [`${date()}-${channel.id}`, new Date(), JSON.stringify(channel)],
     );
+
+    db.run(
+        "INSERT INTO channel_metadata(id, snapshot) VALUES(?, ?) ON CONFLICT(ID) DO UPDATE SET snapshot = excluded.snapshot",
+        [`${channel.id}`, JSON.stringify(channelRaw.snippet)],
+    );
   }
 
   for (const record in videos) {
-    const obj = videos[record];
+    const videoRaw = videos[record];
+    const video = {
+      id: videoRaw.id,
+      ...videoRaw.statistics,
+    };
     db.run(
       "INSERT INTO video_snapshots(id, date, snapshot) VALUES(?, ?,?) ON CONFLICT(id) DO UPDATE SET snapshot = excluded.snapshot",
-      [`${date()}-${obj.id}`, new Date(), JSON.stringify(obj)],
+      [`${date()}-${obj.id}`, new Date(), JSON.stringify(video)],
+    );
+
+    db.run(
+        "INSERT INTO video_metadata(id, snapshot) VALUES(?, ?) ON CONFLICT(ID) DO UPDATE SET snapshot = excluded.snapshot",
+        [`${video.id}`, JSON.stringify(videoRaw.snippet)],
     );
   }
 });
