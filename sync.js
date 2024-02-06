@@ -82,7 +82,7 @@ db.serialize(() => {
     };
     db.run(
       "INSERT INTO video_snapshots(id, date, snapshot) VALUES(?, ?,?) ON CONFLICT(id) DO UPDATE SET snapshot = excluded.snapshot",
-      [`${date()}-${obj.id}`, new Date(), JSON.stringify(video)],
+      [`${date()}-${video.id}`, new Date(), JSON.stringify(video)],
     );
 
     db.run(
